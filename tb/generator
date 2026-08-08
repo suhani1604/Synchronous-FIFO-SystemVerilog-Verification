@@ -1,0 +1,36 @@
+// Generator
+
+class generator;
+
+    mailbox #(transaction) gen2drv;
+
+
+    function new(mailbox #(transaction) mb);
+
+        gen2drv = mb;
+
+    endfunction
+
+
+
+    task run();
+
+        repeat(20) begin
+
+            transaction tr;
+
+            tr = new();
+
+            assert(tr.randomize());
+
+            gen2drv.put(tr);
+
+            tr.display("GENERATOR");
+
+        end
+
+    endtask
+
+endclass
+
+
