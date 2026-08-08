@@ -1,0 +1,142 @@
+
+
+// Scoreboard
+
+class scoreboard;
+
+    mailbox #(transaction) mon2scb;
+
+    bit [7:0] queue[$];
+
+
+    function new(mailbox #(transaction) mb);
+
+        mon2scb = mb;
+
+    endfunction
+
+
+
+    task run();
+
+        transaction tr;
+
+
+        forever begin
+
+            mon2scb.get(tr);
+
+
+
+            if(tr.wr_en) begin
+
+                queue.push_back(tr.data_in);
+
+                $display("SCB WRITE %h",tr.data_in);
+
+            end
+
+
+
+            if(tr.rd_en) begin
+
+
+                if(queue.size()>0) begin
+
+
+                    if(queue[0]==tr.data_out)
+
+                        $display("SCB PASS");
+
+                    else
+
+                        $display("SCB FAIL Expected=%h Actual=%h",
+                                  queue[0],tr.data_out);
+
+
+
+                    queue.pop_front();
+
+                end
+
+            end
+
+
+        end
+
+    endtask
+
+endclass
+
+
+
+
+// Environment
+
+class environment;
+
+
+    generator gen;
+
+    driver drv;
+
+    monitor mon;
+
+    scoreboard scb;
+
+
+    mailbox #(transaction) gen2drv;
+
+    mailbox #(transaction) mon2scb;
+
+
+    virtual fifo_if vif;
+
+
+
+    function new(virtual fifo_if vif);
+
+
+        this.vif=vif;
+
+
+        gen2drv=new();
+
+        mon2scb=new();
+
+
+        gen=new(gen2drv);
+
+        drv=new(vif,gen2drv);
+
+        mon=new(vif,mon2scb);
+
+        scb=new(mon2scb);
+
+
+    endfunction
+
+
+
+    task run();
+
+
+        fork
+
+            gen.run();
+
+            drv.run();
+
+            mon.run();
+
+            scb.run();
+
+
+        join_none
+
+
+    endtask
+
+
+endclass
+
