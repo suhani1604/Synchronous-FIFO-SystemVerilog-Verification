@@ -1,0 +1,87 @@
+
+module tb;
+
+
+    logic clk;
+
+
+    always #5 clk = ~clk;
+
+
+
+    fifo_if vif(clk);
+
+
+
+    environment env;
+
+
+
+    sync_fifo dut(
+
+        .clk(clk),
+
+        .rst(vif.rst),
+
+        .wr_en(vif.wr_en),
+
+        .rd_en(vif.rd_en),
+
+        .data_in(vif.data_in),
+
+        .data_out(vif.data_out),
+
+        .full(vif.full),
+
+        .empty(vif.empty)
+
+    );
+
+
+
+
+    initial begin
+
+$dumpfile("dump.vcd");
+        $dumpvars(0,tb);
+
+        clk=0;
+
+
+        env=new(vif);
+
+
+
+        vif.rst=1;
+
+        vif.wr_en=0;
+
+        vif.rd_en=0;
+
+        vif.data_in=0;
+
+
+
+        #20;
+
+
+        vif.rst=0;
+
+
+
+        env.run();
+
+
+
+        #500;
+
+
+
+        $finish;
+
+
+    end
+
+
+
+endmodule
