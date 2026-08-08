@@ -28,7 +28,7 @@ Verification Environment
 | `scoreboard` | Tracks expected FIFO contents and checks DUT output |
 | `environment` | Connects generator, driver, monitor, and scoreboard |
 | `tb` | Top-level: instantiates DUT, generates clock/reset, and starts the verification environment |
-Components communicate through SystemVerilog mailboxes. The scoreboard maintains a reference model of FIFO contents and flags any mismatch between expected and actual data, along with full/empty behavior.
+
 
 
 Verification Flow
@@ -38,6 +38,7 @@ Generator → Driver → FIFO (DUT) → Monitor → Scoreboard
 Simulation
 
 Run on ModelSim/QuestaSim and EDA Playground; waveforms viewed in EPWave.
+
 Waveform
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 <img width="1839" height="369" alt="fifo_waveform" src="https://github.com/user-attachments/assets/516e4653-ea40-44d2-9eb9-4af2ac480d9d" />
@@ -46,14 +47,21 @@ Waveform
 Signals of interest: clock, reset, write enable, read enable, input data, output data, full flag, empty flag
 
 Sample Output
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 text
+
 GENERATOR → DRIVER → MONITOR → SCOREBOARD
+
 SCB: PASS
+
 Expected = XX
 Actual   = XX
 
 Author
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Suhani Deshmukh
+
 suhani.deshmukh1612@gmail.com
+
 7387568151
 
