@@ -1,0 +1,47 @@
+
+// Driver
+
+class driver;
+
+    virtual fifo_if vif;
+
+    mailbox #(transaction) gen2drv;
+
+
+    function new(virtual fifo_if vif,
+                 mailbox #(transaction) mb);
+
+        this.vif = vif;
+        gen2drv = mb;
+
+    endfunction
+
+
+
+    task run();
+
+        transaction tr;
+
+
+        forever begin
+
+            gen2drv.get(tr);
+
+
+            @(posedge vif.clk);
+
+
+            vif.wr_en   <= tr.wr_en;
+            vif.rd_en   <= tr.rd_en;
+            vif.data_in <= tr.data_in;
+
+
+            tr.display("DRIVER");
+
+        end
+
+    endtask
+
+endclass
+
+
